@@ -1,0 +1,14 @@
+asgiref==3.7.2
+certifi==2023.5.7
+cffi==1.15.1
+charset-normalizer==3.2.0
+cryptography==41.0.1
+Django==4.2.3
+idna==3.4
+josepy==1.13.0
+mozilla-django-oidc==3.0.0
+pycparser==2.21
+pyOpenSSL==23.2.0
+requests==2.31.0
+sqlparse==0.4.4
+urllib3==2.0.3

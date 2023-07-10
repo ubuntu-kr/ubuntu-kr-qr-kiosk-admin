@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+import requests
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l-bf%-1o4-*7-tq8(n2t8v3q_2ie9zv2&4_y6v)7_(-wn91h9d'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'mozilla_django_oidc',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -47,14 +49,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
+    
+]
+
+AUTHENTICATION_BACKENDS = [
+    # 'django.contrib.auth.backends.ModelBackend',
+    # 'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
+    'kioskadmin.oidc_auth.MyOIDCAuthBackend',
 ]
 
 ROOT_URLCONF = 'kioskadmin.urls'
 
+SRC_DIR = Path(__file__).resolve().parent
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [SRC_DIR.joinpath("templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,3 +134,26 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# OIDC Config
+OIDC_CONFIG_BASEURL = os.environ['OIDC_CONFIG_BASEURL']
+try:
+    oidc_document = requests.get(f"{OIDC_CONFIG_BASEURL}/.well-known/openid-configuration").json()
+    OIDC_OP_AUTHORIZATION_ENDPOINT = oidc_document["authorization_endpoint"]
+    OIDC_OP_TOKEN_ENDPOINT = oidc_document["token_endpoint"]
+    OIDC_OP_USER_ENDPOINT = oidc_document["userinfo_endpoint"]
+    OIDC_OP_JWKS_ENDPOINT = oidc_document["jwks_uri"]
+except requests.exceptions.ConnectionError:
+    print("Skipping configuration for OIDC! It won't work correctly")
+    OIDC_OP_AUTHORIZATION_ENDPOINT = None
+    OIDC_OP_TOKEN_ENDPOINT = None
+    OIDC_OP_USER_ENDPOINT = None
+    OIDC_OP_JWKS_ENDPOINT = None
+
+OIDC_RP_SIGN_ALGO="RS256"
+OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+LOGIN_REDIRECT_URL = "/admin"
+LOGOUT_REDIRECT_URL = "/admin/logout"
+OIDC_CREATE_USER = True # Disable Django User Automatic Creation from OIDC
+OIDC_USERNAME_ALGO = "kioskadmin.oidc_auth.generate_username"

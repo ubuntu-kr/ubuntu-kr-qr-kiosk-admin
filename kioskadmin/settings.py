@@ -135,6 +135,15 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Email Config
+EMAIL_HOST = os.environ["EMAIL_HOST"]
+EMAIL_PORT = os.environ["EMAIL_PORT"]
+EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
+EMAIL_SENDER = os.environ["EMAIL_SENDER"]
+EMAIL_SENDER_NAME = os.environ["EMAIL_SENDER_NAME"]
+EMAIL_EVENT_NAME = os.environ["EMAIL_EVENT_NAME"]
+
 # OIDC Config
 OIDC_CONFIG_BASEURL = os.environ["OIDC_CONFIG_BASEURL"]
 try:

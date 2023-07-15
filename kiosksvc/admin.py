@@ -1,20 +1,24 @@
 from django.contrib import admin
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.conf import settings
-from josepy.jwk import RSAKey
-from josepy.jws import JWS
+from cryptography.hazmat.primitives import serialization
+import jwt
 import uuid
 import qrcode
+import io
+
+from .models import Participant
+
 
 
 # Register your models here.
 class ParticipantAdmin(admin.ModelAdmin):
+    actions = ['send_checkin_qr_email', ]
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
-        with open(settings.CHECKIN_QR_CONFIG["private_key_path"], 'rb') as f:
-            private_key = RSAKey.from_pem(f.read())
-        jwk = private_key.key
+        private_key = open(settings.CHECKIN_QR_CONFIG["private_key_path"], 'r').read()
+        key = serialization.load_ssh_private_key(private_key.encode(), password=b'')
 
         for participant in queryset:
             jwt_payload = {
@@ -23,17 +27,24 @@ class ParticipantAdmin(admin.ModelAdmin):
                 "nametagName": participant.name,
                 "nametagAffiliation": participant.affilation,
                 "nametagRole": participant.role,
-                "nametagUrl": participant.qrUrl
+                "nametagUrl": participant.qrUrl,
             }
-            jws = JWS.sign(jwt_payload, jwk)
-            jwt = jws.serialize(compact=True)
+            
+            new_token = jwt.encode(
+                payload=jwt_payload,
+                key=key,
+                algorithm='RS256'
+            )
             qr = qrcode.QRCode(version=1, box_size=10, border=4)
-            qr.add_data(jwt)
+            qr.add_data(new_token)
             qr.make(fit=True)
             qrimg = qr.make_image(fill_color="black", back_color="white")
+            qrimg_byte_arr = io.BytesIO()
+            qrimg.save(qrimg_byte_arr, format='PNG')
+            qrimg_byte_arr = qrimg_byte_arr.getvalue()
 
             # Replace the placeholders with the actual email content
-            subject = f'{settings.EMAIL_EVENT_NAME} 체크인 QR 코드'
+            subject = f"{settings.EMAIL_EVENT_NAME} 체크인 QR 코드"
             message = f"""
             {participant.name}님 안녕하세요,
 
@@ -44,13 +55,21 @@ class ParticipantAdmin(admin.ModelAdmin):
             감사합니다.
             {settings.EMAIL_SENDER_NAME} 드림.
             """
-            from_email = settings.EMAIL_SENDER
-            to_email = [participant.email]  # Assuming the email field is called 'email'
 
+            email = EmailMessage(
+                subject,
+                message,
+                settings.EMAIL_SENDER,
+                [participant.email],
+                [],
+                reply_to=[],
+                headers={},
+            )
+            email.attach("checkin_qr.png", qrimg_byte_arr, "image/png")
             try:
-                send_mail(subject, message, from_email, to_email)
+                email.send()
             except Exception as e:
-                messages.error(request, f"Failed to send email to {object.email}: {e}")
+                messages.error(request, f"Failed to send email to {participant.email}: {e}")
             else:
-                messages.success(request, f"Email sent successfully to {object.email}")
-
+                messages.success(request, f"Email sent successfully to {participant.email}")
+admin.site.register(Participant, ParticipantAdmin)

@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from kiosksvc import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('oidc/', include('mozilla_django_oidc.urls')),
+    path("kioskconfig", views.kiosk_config, name="kiosk_config"),
 ]

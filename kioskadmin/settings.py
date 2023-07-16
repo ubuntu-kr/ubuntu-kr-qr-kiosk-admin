@@ -144,6 +144,7 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_SENDER = os.environ["EMAIL_SENDER"]
 EMAIL_SENDER_NAME = os.environ["EMAIL_SENDER_NAME"]
 EMAIL_EVENT_NAME = os.environ["EMAIL_EVENT_NAME"]
+EMAIL_REPLY_TO = os.environ["EMAIL_REPLY_TO"]
 
 # OIDC Config
 OIDC_CONFIG_BASEURL = os.environ["OIDC_CONFIG_BASEURL"]
@@ -174,4 +175,5 @@ OIDC_USERNAME_ALGO = "kioskadmin.oidc_auth.generate_username"
 CHECKIN_QR_CONFIG = {
     "private_key_path": os.environ["CHECKIN_QR_JWT_PRIVATE_KEY_PATH"],
     "public_key_path": os.environ["CHECKIN_QR_JWT_PUBLIC_KEY_PATH"],
+    "key_algo": os.environ["CHECKIN_QR_JWT_KEY_ALGO"],
 }

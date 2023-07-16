@@ -7,7 +7,8 @@ import jwt
 import uuid
 import qrcode
 import io
-
+import gzip
+import base64
 from .models import Participant
 
 
@@ -18,7 +19,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
         private_key = open(settings.CHECKIN_QR_CONFIG["private_key_path"], 'r').read()
-        key = serialization.load_ssh_private_key(private_key.encode(), password=b'')
+        key = serialization.load_pem_private_key(private_key.encode(), password=None)
 
         for participant in queryset:
             jwt_payload = {
@@ -33,8 +34,10 @@ class ParticipantAdmin(admin.ModelAdmin):
             new_token = jwt.encode(
                 payload=jwt_payload,
                 key=key,
-                algorithm='RS256'
+                algorithm='ES256'
             )
+            # new_token_gzip = gzip.compress(bytes(new_token, 'utf-8'))
+            # base64_token = str(base64.b64encode(new_token_gzip))
             qr = qrcode.QRCode(version=1, box_size=10, border=4)
             qr.add_data(new_token)
             qr.make(fit=True)
@@ -62,14 +65,14 @@ class ParticipantAdmin(admin.ModelAdmin):
                 settings.EMAIL_SENDER,
                 [participant.email],
                 [],
-                reply_to=[],
+                reply_to=[settings.EMAIL_REPLY_TO],
                 headers={},
             )
             email.attach("checkin_qr.png", qrimg_byte_arr, "image/png")
             try:
                 email.send()
             except Exception as e:
-                messages.error(request, f"Failed to send email to {participant.email}: {e}")
+                messages.error(request, f"{participant.email}(으)로 이메일을 발송하지 못했습니다.: {e}")
             else:
-                messages.success(request, f"Email sent successfully to {participant.email}")
+                messages.success(request, f"체크인 QR 코드가 담긴 이메일을 {participant.email}(으)로 잘 발송했습니다.")
 admin.site.register(Participant, ParticipantAdmin)

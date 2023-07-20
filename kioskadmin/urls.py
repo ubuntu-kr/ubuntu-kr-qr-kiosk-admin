@@ -22,5 +22,6 @@ from kiosksvc import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('oidc/', include('mozilla_django_oidc.urls')),
-    path("kioskconfig", views.kiosk_config, name="kiosk_config"),
+    path("kioskconfig/", views.kiosk_config, name="kiosk_config"),
+    path("checkin/", views.CheckInParticipant.as_view())
 ]

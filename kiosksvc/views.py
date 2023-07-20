@@ -11,7 +11,7 @@ import jwt
 import datetime
 
 jwt_public_key_raw = open(settings.CHECKIN_QR_CONFIG["public_key_path"], 'r').read()
-jwt_public_key = serialization.load_pem_public_key(jwt_public_key_raw.encode(), password=None)
+jwt_public_key = serialization.load_pem_public_key(jwt_public_key_raw.encode())
 jwt_key_algo = settings.CHECKIN_QR_CONFIG["key_algo"]
 # Create your views here.
 def kiosk_config(request):

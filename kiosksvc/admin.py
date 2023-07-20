@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OriginalUserAdmin
 
 import jwt
+import json
 import uuid
 import qrcode
 import io
@@ -42,7 +43,7 @@ class ParticipantAdmin(admin.ModelAdmin):
             )
             # new_token_gzip = gzip.compress(bytes(new_token, 'utf-8'))
             # base64_token = str(base64.b64encode(new_token_gzip))
-            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+            qr = qrcode.QRCode(version=None, box_size=10, border=4)
             qr.add_data(new_token)
             qr.make(fit=True)
             qrimg = qr.make_image(fill_color="black", back_color="white")
@@ -86,13 +87,14 @@ class UserTokenAdmin(OriginalUserAdmin):
     def send_token_qr_email(self, request, queryset):
         for user in queryset:
             new_token = Token.objects.get_or_create(user=user)[0]
+            
             qr_json_payload = {
-                "config_endpoint": request.get_host(),
+                "config_endpoint": "{}://{}".format(request.scheme, request.get_host()),
                 "token": new_token.key
             }
             print(qr_json_payload)
-            qr = qrcode.QRCode(version=1, box_size=10, border=4)
-            qr.add_data(str(qr_json_payload))
+            qr = qrcode.QRCode(version=None, box_size=10, border=4)
+            qr.add_data(json.dumps(qr_json_payload))
             qr.make(fit=True)
             qrimg = qr.make_image(fill_color="black", back_color="white")
             qrimg_byte_arr = io.BytesIO()

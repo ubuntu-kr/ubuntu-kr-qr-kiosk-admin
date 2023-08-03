@@ -50,7 +50,7 @@ class CheckInParticipant(APIView):
         CheckInLog.objects.create(
             tokenId=payload['tid'],
             checkedInAt=datetime.datetime.now(),
-            participant=Participant.objects.get(id=payload['sub'])
+            participant=Participant.objects.get(id=int(payload['sub']))
         )
         return JsonResponse({
                 "result":"Participant successfully checked in"

@@ -28,7 +28,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 
         for participant in queryset:
             jwt_payload = {
-                "sub": participant.id,
+                "sub": str(participant.id),
                 "tid": str(uuid.uuid1()),
                 "nametagName": participant.name,
                 "nametagAffiliation": participant.affilation,
@@ -93,8 +93,10 @@ class UserTokenAdmin(OriginalUserAdmin):
                 "token": new_token.key
             }
             print(qr_json_payload)
+            payload_b64 = base64.b64encode(json.dumps(qr_json_payload).encode())
+            print(payload_b64)
             qr = qrcode.QRCode(version=None, box_size=10, border=4)
-            qr.add_data(json.dumps(qr_json_payload))
+            qr.add_data(payload_b64)
             qr.make(fit=True)
             qrimg = qr.make_image(fill_color="black", back_color="white")
             qrimg_byte_arr = io.BytesIO()

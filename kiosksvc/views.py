@@ -42,7 +42,7 @@ class CheckInParticipant(APIView):
             return JsonResponse({
                 "result":"Error decoding token"
             }, status=401)
-        dupcheck = CheckInLog.objects.first(tokenId=payload['tid'])
+        dupcheck = CheckInLog.objects.filter(tokenId=payload['tid']).first()
         if(dupcheck is not None):
             return JsonResponse({
                 "result":"Participant already checked in"

@@ -56,7 +56,7 @@ class ParticipantAdmin(admin.ModelAdmin):
             qrimg_byte_arr = io.BytesIO()
             qrimg.save(qrimg_byte_arr, format='PNG')
             qrimg_byte_arr = qrimg_byte_arr.getvalue()
-            passcode = random_with_N_digits(6)
+            passcode = str(random_with_N_digits(6))
             participant.passCode = bcrypt.hashpw(passcode.encode(), bcrypt.gensalt())
             participant.save()
 

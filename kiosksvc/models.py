@@ -7,7 +7,7 @@ class Participant(models.Model):
     affilation = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
     qrUrl = models.URLField()
-    passCode = models.BinaryField(max_length=100)
+    passCode = models.BinaryField(max_length=100, null=True)
 
 class CheckInLog(models.Model):
     tokenId = models.CharField(max_length=100, unique=True)

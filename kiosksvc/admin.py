@@ -6,6 +6,7 @@ from cryptography.hazmat.primitives import serialization
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OriginalUserAdmin
+from import_export.admin import ImportExportMixin
 
 import jwt
 import json
@@ -17,16 +18,19 @@ import bcrypt
 import base64
 from random import randint
 
-from .models import Participant
+from .models import Participant, CheckInLog
 
 def random_with_N_digits(n):
     range_start = 10**(n-1)
     range_end = (10**n)-1
     return randint(range_start, range_end)
 
+class CheckInLogAdmin(admin.ModelAdmin):
+    list_display = ["tokenId", "checkedInAt", "participant"]
 # Register your models here.
-class ParticipantAdmin(admin.ModelAdmin):
+class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
     actions = ['send_checkin_qr_email', ]
+    list_display = ["name", "email", "affilation", "role"]
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
         private_key = open(settings.CHECKIN_QR_CONFIG["private_key_path"], 'r').read()
@@ -147,3 +151,4 @@ class UserTokenAdmin(OriginalUserAdmin):
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.unregister(User)
 admin.site.register(User, UserTokenAdmin)
+admin.site.register(CheckInLog, CheckInLogAdmin)

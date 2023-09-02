@@ -107,9 +107,10 @@ class CheckInByCode(APIView):
             }, status=401)
         
         passCodeData = PasscodeCheckInSerializer(data=request.data)
+        passCodeData.is_valid()
         participant = Participant.objects.get(id=int(participantId))
         
-        passcodeCheck = bcrypt.checkpw(passCodeData.passcode, participant.passCode)
+        passcodeCheck = bcrypt.checkpw(passCodeData.validated_data['passcode'].encode(), participant.passCode)
         if (not passcodeCheck):
             return JsonResponse({
                 "result":"틀린 인증코드 입니다. Passcode not matches."

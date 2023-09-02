@@ -179,3 +179,5 @@ CHECKIN_QR_CONFIG = {
     "public_key_path": os.environ["CHECKIN_QR_JWT_PUBLIC_KEY_PATH"],
     "key_algo": os.environ["CHECKIN_QR_JWT_KEY_ALGO"],
 }
+
+# APPEND_SLASH=False

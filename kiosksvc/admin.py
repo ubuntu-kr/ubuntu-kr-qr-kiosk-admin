@@ -13,10 +13,16 @@ import uuid
 import qrcode
 import io
 import gzip
+import bcrypt
 import base64
+from random import randint
+
 from .models import Participant
 
-
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 # Register your models here.
 class ParticipantAdmin(admin.ModelAdmin):
@@ -50,15 +56,22 @@ class ParticipantAdmin(admin.ModelAdmin):
             qrimg_byte_arr = io.BytesIO()
             qrimg.save(qrimg_byte_arr, format='PNG')
             qrimg_byte_arr = qrimg_byte_arr.getvalue()
+            passcode = random_with_N_digits(6)
+            participant.passCode = bcrypt.hashpw(passcode.encode(), bcrypt.gensalt())
+            participant.save()
 
             # Replace the placeholders with the actual email content
-            subject = f"{settings.EMAIL_EVENT_NAME} 체크인 QR 코드"
+            subject = f"{settings.EMAIL_EVENT_NAME} 체크인 QR 코드 및 인증코드"
             message = f"""
             {participant.name}님 안녕하세요,
 
             {settings.EMAIL_EVENT_NAME}에 참가 등록 해 주셔서 감사합니다.
-            행사장에서 체크인과 명찰 발급에 사용할 수 있는 QR코드를 발급하여 첨부 해 드렸습니다.
-            첨부된 QR코드 이미지를 열어 행사장에서 이용하시기 바랍니다.
+            행사장에서 체크인과 명찰 발급에 사용할 수 있는 QR코드와 인증코드를 발급하여 첨부 해 드렸습니다.
+
+            QR 코드를 이용하는 경우, 첨부된 QR 코드 이미지를 행사장에서 스캔 하시고,
+            인증 코드를 이용하는 경우, 아래 6자리 코드를 입력 하시면 됩니다.
+
+            인증코드: {passcode}
 
             감사합니다.
             {settings.EMAIL_SENDER_NAME} 드림.

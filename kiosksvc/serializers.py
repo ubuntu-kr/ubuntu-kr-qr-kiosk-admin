@@ -11,3 +11,6 @@ class ParticipantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Participant
         fields = ['id', 'name', 'email', 'affilation', 'role', 'qrUrl']
+
+class PasscodeCheckInSerializer(serializers.Serializer):
+    passcode = serializers.CharField(max_length=200)

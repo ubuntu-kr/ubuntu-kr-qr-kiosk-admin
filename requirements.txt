@@ -17,6 +17,7 @@ mozilla-django-oidc==3.0.0
 odfpy==1.4.1
 openpyxl==3.1.2
 Pillow==10.0.0
+psycopg==3.1.10
 pycparser==2.21
 PyJWT==2.7.0
 pyOpenSSL==23.2.0

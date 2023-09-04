@@ -80,10 +80,8 @@ class CheckInParticipant(APIView):
             headers={},
         )
         email.send()
-
-        return JsonResponse({
-                "result":"Participant successfully checked in"
-            }, status=200)
+        serializer = ParticipantSerializer(participant, many=False)
+        return JsonResponse(serializer.data)
 
 class CheckInByCode(APIView):
     """

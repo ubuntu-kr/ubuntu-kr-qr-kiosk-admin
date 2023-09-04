@@ -40,10 +40,6 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
             jwt_payload = {
                 "sub": str(participant.id),
                 "tid": str(uuid.uuid1()),
-                "nametagName": participant.name,
-                "nametagAffiliation": participant.affilation,
-                "nametagRole": participant.role,
-                "nametagUrl": participant.qrUrl,
             }
             
             new_token = jwt.encode(

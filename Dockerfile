@@ -11,9 +11,8 @@ WORKDIR /app
 COPY . .
 
 RUN mkdir /app/static && \
-  pip install -r requirements.txt && \
-  python manage.py collectstatic
-
+  pip install -r requirements.txt 
+  
 
 EXPOSE 8000
 

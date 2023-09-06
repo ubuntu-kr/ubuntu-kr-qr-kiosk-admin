@@ -155,6 +155,7 @@ EMAIL_SENDER = os.environ["EMAIL_SENDER"]
 EMAIL_SENDER_NAME = os.environ["EMAIL_SENDER_NAME"]
 EMAIL_EVENT_NAME = os.environ["EMAIL_EVENT_NAME"]
 EMAIL_REPLY_TO = os.environ["EMAIL_REPLY_TO"]
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True) == "True"
 
 # OIDC Config
 OIDC_CONFIG_BASEURL = os.environ["OIDC_CONFIG_BASEURL"]

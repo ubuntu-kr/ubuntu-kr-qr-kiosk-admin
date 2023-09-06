@@ -3,7 +3,7 @@ bcrypt==4.0.1
 certifi==2023.7.22
 cffi==1.15.1
 charset-normalizer==3.2.0
-cryptography==41.0.1
+cryptography==41.0.3
 defusedxml==0.7.1
 diff-match-patch==20230430
 Django==4.2.3

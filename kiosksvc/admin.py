@@ -7,6 +7,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OriginalUserAdmin
 from import_export.admin import ImportExportMixin
+from import_export import resources, fields
+
 
 import jwt
 import json
@@ -27,8 +29,14 @@ def random_with_N_digits(n):
 
 class CheckInLogAdmin(admin.ModelAdmin):
     list_display = ["tokenId", "checkedInAt", "participant"]
+
+class ParticipantResource(resources.ModelResource):
+    class Meta:
+        model = Participant
+        exclude = ('id', 'passCode',)
 # Register your models here.
 class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
+    resource_class = ParticipantResource
     actions = ['send_checkin_qr_email', ]
     list_display = ["name", "email", "affilation", "role"]
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
@@ -93,6 +101,8 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
                 messages.error(request, f"{participant.email}(으)로 이메일을 발송하지 못했습니다.: {e}")
             else:
                 messages.success(request, f"체크인 QR 코드가 담긴 이메일을 {participant.email}(으)로 잘 발송했습니다.")
+
+
 
 class UserTokenAdmin(OriginalUserAdmin):
     actions = ['send_token_qr_email', 'activate_user','deactivate_user']

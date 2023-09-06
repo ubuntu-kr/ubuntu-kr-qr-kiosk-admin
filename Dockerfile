@@ -14,5 +14,6 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
+ENTRYPOINT ["run.sh"]
 # runs the production server
-ENTRYPOINT ["gunicorn", "kioskadmin.wsgi"]
+CMD ["gunicorn", "kioskadmin.wsgi"]

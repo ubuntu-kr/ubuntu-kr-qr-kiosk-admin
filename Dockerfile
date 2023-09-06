@@ -16,4 +16,4 @@ EXPOSE 8000
 
 ENTRYPOINT ["./run.sh"]
 # runs the production server
-CMD ["gunicorn", "kioskadmin.wsgi"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "kioskadmin.wsgi"]

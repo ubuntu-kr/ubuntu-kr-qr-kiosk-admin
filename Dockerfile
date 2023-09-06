@@ -10,7 +10,10 @@ WORKDIR /app
 # Copy project
 COPY . .
 
-RUN pip install -r requirements.txt
+RUN mkdir /app/static && \
+  pip install -r requirements.txt && \
+  python manage.py collectstatic
+
 
 EXPOSE 8000
 

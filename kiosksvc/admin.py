@@ -33,7 +33,7 @@ class CheckInLogAdmin(admin.ModelAdmin):
 class ParticipantResource(resources.ModelResource):
     class Meta:
         model = Participant
-        exclude = ('id', 'passCode',)
+        exclude = ('passCode')
 # Register your models here.
 class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
     resource_class = ParticipantResource

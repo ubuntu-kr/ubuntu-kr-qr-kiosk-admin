@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.db import models
 from django.http import JsonResponse
 from django.conf import settings
 from django.utils import timezone
@@ -57,7 +57,12 @@ class CheckInParticipant(APIView):
             return JsonResponse({
                 "result":"Participant already checked in"
             }, status=401)
-        participant = Participant.objects.get(id=int(payload['sub']))
+        try:
+            participant = Participant.objects.get(id=int(payload['sub']))
+        except models.DoesNotExist:
+             return JsonResponse({
+                "result":"존재하지 않는 참가자 입니다. Participant not exists."
+            }, status=404)
         CheckInLog.objects.create(
             tokenId=payload['tid'],
             checkedInAt=timezone.now(),

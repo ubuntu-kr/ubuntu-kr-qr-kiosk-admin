@@ -10,7 +10,7 @@ class CheckInLogSerializer(serializers.HyperlinkedModelSerializer):
 class ParticipantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Participant
-        fields = ['id', 'name', 'email', 'affilation', 'role', 'qrUrl']
+        fields = ['id', 'name', 'email', 'affilation', 'role', 'qrUrl', 'couponDetail']
 
 class PasscodeCheckInSerializer(serializers.Serializer):
     passcode = serializers.CharField(max_length=200)

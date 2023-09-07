@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
+from django.utils import timezone
 from kiosksvc.models import CheckInLog, Participant
 from kiosksvc.serializers import ParticipantSerializer, PasscodeCheckInSerializer
 from rest_framework.views import APIView
@@ -59,7 +60,7 @@ class CheckInParticipant(APIView):
         participant = Participant.objects.get(id=int(payload['sub']))
         CheckInLog.objects.create(
             tokenId=payload['tid'],
-            checkedInAt=datetime.datetime.now(),
+            checkedInAt=timezone.now(),
             participant=participant
         )
 
@@ -116,7 +117,7 @@ class CheckInByCode(APIView):
 
         CheckInLog.objects.create(
             tokenId="PASSCODE",
-            checkedInAt=datetime.datetime.now(),
+            checkedInAt=timezone.now(),
             participant=participant
         )
 

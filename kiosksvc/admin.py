@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
+from django.forms import ModelForm, Textarea
 from cryptography.hazmat.primitives import serialization
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
@@ -34,11 +35,20 @@ class ParticipantResource(resources.ModelResource):
     class Meta:
         model = Participant
         exclude = ('passCode')
+
+class ParticipantForm(ModelForm):
+    class Meta:
+        model = Participant
+        exclude = ["passCode"]
+        widgets = {
+            "couponDetail": Textarea(attrs={"rows": 10}),
+        }
 # Register your models here.
 class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
+    form = ParticipantForm
     resource_class = ParticipantResource
     actions = ['send_checkin_qr_email', ]
-    list_display = ["name", "email", "affilation", "role"]
+    list_display = ["name", "email", "affilation", "role", "couponDetail"]
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
         private_key = open(settings.CHECKIN_QR_CONFIG["private_key_path"], 'r').read()

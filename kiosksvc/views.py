@@ -104,7 +104,7 @@ class CheckInByCode(APIView):
                 "result":"participantId not found in query params"
             }, status=401)
         participantId = request.query_params['participantId']
-        dupcheck = CheckInLog.objects.filter(tokenId="PASSCODE", participant=int(participantId)).first()
+        dupcheck = CheckInLog.objects.filter(participant=int(participantId)).first()
         if(dupcheck is not None):
             return JsonResponse({
                 "result":"이미 체크인 한 참가자 입니다. Participant already checked in."
@@ -121,7 +121,7 @@ class CheckInByCode(APIView):
             }, status=401)
 
         CheckInLog.objects.create(
-            tokenId="PASSCODE",
+            tokenId=f"PASSCODE_{datetime.datetime.now().timestamp()}",
             checkedInAt=timezone.now(),
             participant=participant
         )

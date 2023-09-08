@@ -79,7 +79,7 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
             participant.save()
 
             # Replace the placeholders with the actual email content
-            subject = f"{settings.EMAIL_EVENT_NAME} 체크인 QR 코드 및 인증코드"
+            subject = f"{settings.EMAIL_EVENT_NAME} 체크인 QR 코드 및 인증코드 Your Check-in QR Code and Passcode"
             message = f"""
             {participant.name}님 안녕하세요,
 
@@ -93,6 +93,17 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
 
             감사합니다.
             {settings.EMAIL_SENDER_NAME} 드림.
+
+            Hello {participant.name},
+
+            Thank you for registering to {settings.EMAIL_EVENT_NAME}.
+            We've attached and QR Code and passcode that you can use to Check-in and print your badge.
+
+            If you're using the QR code, please scan the QR code at the venue,
+            or if you're using passcode, please enter the following 6-digit code on kiosk.
+
+            Best regards,
+            {settings.EMAIL_SENDER_NAME}
             """
 
             email = EmailMessage(

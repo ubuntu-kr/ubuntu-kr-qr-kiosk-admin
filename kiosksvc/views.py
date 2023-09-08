@@ -87,8 +87,17 @@ class CheckInParticipant(APIView):
         message = f"""
         {participant.name}님 안녕하세요,
         {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
+        즐거운 행사 되시기 바랍니다!
 
+        감사합니다.
         {settings.EMAIL_SENDER_NAME} 드림.
+
+        Hello {participant.name},
+        You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
+        Hope you enjoy the event!
+
+        Best regards,
+        {settings.EMAIL_SENDER_NAME}
         """
         email = EmailMessage(
             subject,

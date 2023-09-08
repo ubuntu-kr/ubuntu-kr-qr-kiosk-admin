@@ -30,6 +30,7 @@ def random_with_N_digits(n):
 
 class CheckInLogAdmin(admin.ModelAdmin):
     list_display = ["tokenId", "checkedInAt", "participant"]
+    search_fields = ["tokenId", "checkedInAt", "participant"]
 
 class ParticipantResource(resources.ModelResource):
     class Meta:
@@ -49,6 +50,8 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
     resource_class = ParticipantResource
     actions = ['send_checkin_qr_email', ]
     list_display = ["name", "email", "affilation", "role", "couponDetail"]
+    search_fields = ["name", "email", "affilation", "role", "couponDetail"]
+
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
         private_key = open(settings.CHECKIN_QR_CONFIG["private_key_path"], 'r').read()

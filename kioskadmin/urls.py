@@ -25,5 +25,6 @@ urlpatterns = [
     path("kioskconfig/", views.kiosk_config, name="kiosk_config"),
     path("participants/", views.ParticipantView.as_view()),
     path("checkin/", views.CheckInParticipant.as_view()),
-    path("checkin_passcode/", views.CheckInByCode.as_view())
+    path("checkin_passcode/", views.CheckInByCode.as_view()),
+    path("call_staff/", views.CallStaffView.as_view()),
 ]

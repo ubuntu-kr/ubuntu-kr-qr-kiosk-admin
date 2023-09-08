@@ -12,11 +12,14 @@ import jwt
 import datetime
 import bcrypt
 from django.core.mail import EmailMessage
+import requests
 
 
 jwt_public_key_raw = open(settings.CHECKIN_QR_CONFIG["public_key_path"], 'r').read()
 jwt_public_key = serialization.load_pem_public_key(jwt_public_key_raw.encode())
 jwt_key_algo = settings.CHECKIN_QR_CONFIG["key_algo"]
+public_webhook_url = settings.WEBHOOK_URLS["public"]
+organizer_webhook_url = settings.WEBHOOK_URLS["organizer"]
 # Create your views here.
 def kiosk_config(request):
     return JsonResponse({
@@ -24,6 +27,17 @@ def kiosk_config(request):
         "key_algo": jwt_key_algo,
     })
 
+
+class CallStaffView(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    def get(self, request):
+        webhook_payload = {
+            "text": "누군가가 리셉션 키오스크로 관계자를 호출 했습니다."
+        }
+        requests.post(organizer_webhook_url, json=webhook_payload)
+        return JsonResponse({
+            "result":"success"
+        })
 class ParticipantView(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     def get(self, request):
@@ -86,6 +100,11 @@ class CheckInParticipant(APIView):
             headers={},
         )
         email.send()
+        webhook_payload = {
+            "text": f"{participant.name}님이 행사장에 도착했습니다!"
+        }
+        requests.post(public_webhook_url, json=webhook_payload)
+        requests.post(organizer_webhook_url, json=webhook_payload)
         serializer = ParticipantSerializer(participant, many=False)
         return JsonResponse(serializer.data)
 

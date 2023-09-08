@@ -190,3 +190,9 @@ CHECKIN_QR_CONFIG = {
 }
 
 # APPEND_SLASH=False
+
+#WEBHOOK
+WEBHOOK_URLS = {
+    "public": os.environ["WEBHOOK_PUBLIC_URL"],
+    "organizer": os.environ["WEBHOOK_ORGANIZER_URL"],
+}

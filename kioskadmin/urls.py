@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
-from kiosksvc import views
+from kiosksvc import views, pdfview
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +27,5 @@ urlpatterns = [
     path("checkin/", views.CheckInParticipant.as_view()),
     path("checkin_passcode/", views.CheckInByCode.as_view()),
     path("call_staff/", views.CallStaffView.as_view()),
+    path("request_cert/", pdfview.attendee_cert_request)
 ]

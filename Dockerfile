@@ -12,7 +12,7 @@ COPY . .
 
 RUN mkdir /app/static && \
   pip install -r requirements.txt 
-  
+RUN apt update && apt install fonts-noto-cjk -yq && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
 

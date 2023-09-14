@@ -28,10 +28,10 @@ def attendee_cert_request(request):
             email_addr = form.cleaned_data["email"]
             participant = Participant.objects.filter(email=email_addr).first()
             if participant is None:
-                return render(request, "kiosksvc/reqcert.html", {"form": EmailForm()})
+                return render(request, "kiosksvc/reqcert.html", {"form": EmailForm(), "request_done": True})
             checkin = CheckInLog.objects.filter(participant=participant).first()
             if checkin is None:
-                return render(request, "kiosksvc/reqcert.html", {"form": EmailForm()})
+                return render(request, "kiosksvc/reqcert.html", {"form": EmailForm(), "request_done": True})
             certstamp = open(settings.EMAIL_CERTSTAMP_PATH, 'rb').read()
             # buffer = io.BytesIO(target=certstamp)
             # buffer to base64
@@ -87,6 +87,7 @@ def attendee_cert_request(request):
                 email.send()
             except Exception as e:
                 print(e)
+        return render(request, "kiosksvc/reqcert.html", {"form": EmailForm(), "request_done": True})
     else:
         form = EmailForm()
-    return render(request, "kiosksvc/reqcert.html", {"form": form})
+        return render(request, "kiosksvc/reqcert.html", {"form": form})

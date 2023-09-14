@@ -8,9 +8,16 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 import base64 
 from django.utils import timezone
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 
 class EmailForm(forms.Form):
     email = forms.EmailField(label="email", max_length=100)
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(
+        attrs={
+            'data-size': 'compact',
+        }
+    ))
 
 
 def attendee_cert_request(request):

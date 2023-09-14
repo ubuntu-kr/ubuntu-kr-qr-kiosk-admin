@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "kiosksvc",
     "import_export",
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -197,3 +198,7 @@ WEBHOOK_URLS = {
     "public": os.environ["WEBHOOK_PUBLIC_URL"],
     "organizer": os.environ["WEBHOOK_ORGANIZER_URL"],
 }
+
+# Recaptcha
+RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY", "")
+RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", "")

@@ -1,0 +1,12 @@
+your.app.domain {
+  tls your@email.com
+
+  route /static/* {
+
+    file_server {
+      root /var/www
+    }
+  }
+  reverse_proxy django:8000
+
+}

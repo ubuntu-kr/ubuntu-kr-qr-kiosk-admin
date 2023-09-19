@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  django:
+    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:8a1e2dedb8cd068ffcca3925760d95b535b7c668
+    volumes:
+      - ./data:/app/data
+      - ./static:/app/static
+    ports:
+      - 8000:8000
+    environment:
+      - DEBUG=False
+      - APP_HOST=your.app.domain.com
+      - DB_NAME=kiosk
+      - DB_USER=kioskuser
+      - DB_PASS=your.db.password
+      - DB_HOST=your.db.endpoint
+      - DB_PORT=5432
+      - SECRET_KEY=your.django.sec.key
+      - OIDC_RP_CLIENT_ID=your.oidc.client.id
+      - OIDC_RP_CLIENT_SECRET=your.oidc.client.secret
+      - OIDC_CONFIG_BASEURL=https://oidc.server.baseutl
+      - CHECKIN_QR_JWT_PRIVATE_KEY_PATH=/app/data/path.to.private.ec.key
+      - CHECKIN_QR_JWT_PUBLIC_KEY_PATH=/app/data/path.to.public.pem
+      - CHECKIN_QR_JWT_KEY_ALGO=ES256
+      - EMAIL_HOST=smtp.server.host
+      - EMAIL_PORT=587
+      - EMAIL_HOST_USER=smtp.host.user
+      - EMAIL_HOST_PASSWORD=smtp.host.password
+      - EMAIL_SENDER=noreply@your.domain.org
+      - EMAIL_SENDER_NAME=Sender name here
+      - EMAIL_EVENT_NAME=Event name here
+      - EMAIL_REPLY_TO=contact@your.domain.here
+      - EMAIL_USE_TLS=True
+      - WEBHOOK_ORGANIZER_URL=https://Slack.webhook.url
+      - WEBHOOK_PUBLIC_URL=https://Slack.webhook.url
+      - EMAIL_CERTSTAMP_PATH=/app/data/path.to.stamp.image.png
+      - RECAPTCHA_PUBLIC_KEY=your.recaptcha.pubkey
+      - RECAPTCHA_PRIVATE_KEY=your.recaptcha.privkey
+  caddy:
+    image: caddy
+    volumes:
+      - ./data/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy_data:/data
+      - ./data/caddy_config:/config
+      - ./static:/var/www/static
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - django

@@ -23,8 +23,10 @@ class MyOIDCAuthBackend(OIDCAuthenticationBackend):
     #         return self.UserModel.objects.none()
     def create_user(self, claims):
         user = super(MyOIDCAuthBackend, self).create_user(claims)
-        is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        #is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        is_admin = True
+        #is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        is_superuser = True
         user.first_name = claims.get('given_name', '')
         user.last_name = claims.get('family_name', '')
         user.is_staff = is_admin
@@ -34,8 +36,10 @@ class MyOIDCAuthBackend(OIDCAuthenticationBackend):
         return user
 
     def update_user(self, user, claims):
-        is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        #is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        is_admin = True
+        #is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        is_superuser = True
         user.first_name = claims.get('given_name', '')
         user.last_name = claims.get('family_name', '')
         user.is_staff = is_admin

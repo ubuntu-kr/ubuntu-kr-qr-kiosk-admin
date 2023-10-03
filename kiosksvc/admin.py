@@ -28,7 +28,7 @@ def random_with_N_digits(n):
     range_end = (10**n)-1
     return randint(range_start, range_end)
 
-class CheckInLogAdmin(admin.ModelAdmin):
+class CheckInLogAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ["tokenId", "checkedInAt", "participant"]
     search_fields = ["tokenId", "checkedInAt", "participant"]
 

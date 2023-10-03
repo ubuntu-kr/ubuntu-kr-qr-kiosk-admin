@@ -23,10 +23,8 @@ class MyOIDCAuthBackend(OIDCAuthenticationBackend):
     #         return self.UserModel.objects.none()
     def create_user(self, claims):
         user = super(MyOIDCAuthBackend, self).create_user(claims)
-        #is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_admin = True
-        #is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_superuser = True
+        is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
         user.first_name = claims.get('given_name', '')
         user.last_name = claims.get('family_name', '')
         user.is_staff = is_admin
@@ -36,10 +34,8 @@ class MyOIDCAuthBackend(OIDCAuthenticationBackend):
         return user
 
     def update_user(self, user, claims):
-        #is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_admin = True
-        #is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_superuser = True
+        is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
+        is_superuser = 'kiosk-superuser' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
         user.first_name = claims.get('given_name', '')
         user.last_name = claims.get('family_name', '')
         user.is_staff = is_admin
@@ -50,6 +46,5 @@ class MyOIDCAuthBackend(OIDCAuthenticationBackend):
     def verify_claims(self, claims):
         print(claims)
         verified = super(MyOIDCAuthBackend, self).verify_claims(claims)
-        #is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
-        is_admin = True
+        is_admin = 'kiosk-admin' in claims.get('resource_access').get(oidc_client_id).get('roles', [])
         return verified and is_admin

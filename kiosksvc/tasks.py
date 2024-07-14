@@ -1,0 +1,75 @@
+from django.conf import settings
+import qrcode
+import io
+import bcrypt
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from random import randint
+import uuid
+import jwt
+from celery import shared_task
+
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
+
+@shared_task
+def send_checkin_qr_email(queryset):
+     for participant in queryset:
+        jwt_payload = {
+            "sub": str(participant.id),
+            "tid": str(uuid.uuid1()),
+        }
+        
+        new_token = jwt.encode(
+            payload=jwt_payload,
+            key=key,
+            algorithm='ES256'
+        )
+        # new_token_gzip = gzip.compress(bytes(new_token, 'utf-8'))
+        # base64_token = str(base64.b64encode(new_token_gzip))
+        qr = qrcode.QRCode(version=None, box_size=10, border=4)
+        qr.add_data(new_token)
+        qr.make(fit=True)
+        qrimg = qr.make_image(fill_color="black", back_color="white")
+        qrimg_byte_arr = io.BytesIO()
+        qrimg.save(qrimg_byte_arr, format='PNG')
+        qrimg_byte_arr = qrimg_byte_arr.getvalue()
+        passcode = str(random_with_N_digits(6))
+        participant.passCode = bcrypt.hashpw(passcode.encode(), bcrypt.gensalt())
+        participant.save()
+        # Replace the placeholders with the actual email content
+        subject = f"{settings.EMAIL_EVENT_NAME} 체크인 QR 코드 및 인증코드 Your Check-in QR Code and Passcode"
+        message = f"""
+        {participant.name}님 안녕하세요,
+        {settings.EMAIL_EVENT_NAME}에 참가 등록 해 주셔서 감사합니다.
+        행사장에서 체크인과 명찰 발급에 사용할 수 있는 QR코드와 인증코드를 발급하여 첨부 해 드렸습니다.
+        QR 코드를 이용하는 경우, 첨부된 QR 코드 이미지를 행사장에서 스캔 하시고,
+        인증 코드를 이용하는 경우, 아래 6자리 코드를 입력 하시면 됩니다.
+        인증코드: {passcode}
+        감사합니다.
+        {settings.EMAIL_SENDER_NAME} 드림.
+        Hello {participant.name},
+        Thank you for registering to {settings.EMAIL_EVENT_NAME}.
+        We've attached and QR Code and passcode that you can use to Check-in and print your badge.
+        If you're using the QR code, please scan the QR code at the venue,
+        or if you're using passcode, please enter the following 6-digit code on kiosk.
+        Best regards,
+        {settings.EMAIL_SENDER_NAME}
+        """
+        email = EmailMessage(
+            subject,
+            message,
+            settings.EMAIL_SENDER,
+            [participant.email],
+            [],
+            reply_to=[settings.EMAIL_REPLY_TO],
+            headers={},
+        )
+        email.attach("checkin_qr.png", qrimg_byte_arr, "image/png")
+        email.send()
+
+@shared_task
+def send_checkin_cert_email():
+    pass

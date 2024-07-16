@@ -1,3 +1,5 @@
+import base64
+import json
 from django.conf import settings
 import qrcode
 import io
@@ -17,26 +19,23 @@ def random_with_N_digits(n):
 @shared_task
 def send_checkin_qr_email(queryset):
      for participant in queryset:
-        jwt_payload = {
-            "sub": str(participant.id),
-            "tid": str(uuid.uuid1()),
+
+        passcode = str(random_with_N_digits(6))
+        qr_data = {
+            "id": participant.id,
+            "passcode": passcode
         }
         
-        new_token = jwt.encode(
-            payload=jwt_payload,
-            key=key,
-            algorithm='ES256'
-        )
-        # new_token_gzip = gzip.compress(bytes(new_token, 'utf-8'))
-        # base64_token = str(base64.b64encode(new_token_gzip))
+        qr_json_payload = json.dumps(qr_data)
+        qr_json_payload_b64 = base64.b64encode(qr_json_payload.encode())
         qr = qrcode.QRCode(version=None, box_size=10, border=4)
-        qr.add_data(new_token)
+        qr.add_data(qr_json_payload_b64)
         qr.make(fit=True)
         qrimg = qr.make_image(fill_color="black", back_color="white")
         qrimg_byte_arr = io.BytesIO()
         qrimg.save(qrimg_byte_arr, format='PNG')
         qrimg_byte_arr = qrimg_byte_arr.getvalue()
-        passcode = str(random_with_N_digits(6))
+        
         participant.passCode = bcrypt.hashpw(passcode.encode(), bcrypt.gensalt())
         participant.save()
         # Replace the placeholders with the actual email content

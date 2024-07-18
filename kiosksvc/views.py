@@ -13,6 +13,7 @@ import datetime
 import bcrypt
 from django.core.mail import EmailMessage
 import requests
+from rest_framework.decorators import api_view, authentication_classes
 
 
 jwt_public_key_raw = open(settings.CHECKIN_QR_CONFIG["public_key_path"], 'r').read()
@@ -38,12 +39,20 @@ class CallStaffView(APIView):
         return JsonResponse({
             "result":"success"
         })
-class ParticipantView(APIView):
-    authentication_classes = [authentication.TokenAuthentication]
-    def get(self, request):
-        participants = Participant.objects.filter(email__contains=request.query_params['keyword'])
-        serializer = ParticipantSerializer(participants, many=True)
-        return Response(serializer.data)
+
+@api_view(['GET'])
+@authentication_classes([authentication.TokenAuthentication])
+def search_participants(request):
+    participants = Participant.objects.filter(email__contains=request.query_params['keyword'])
+    serializer = ParticipantSerializer(participants, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@authentication_classes([authentication.TokenAuthentication])
+def get_participant(request):
+    participant = Participant.objects.get(id=request.query_params['id'])
+    serializer = ParticipantSerializer(participant, many=True)
+    return Response(serializer.data)
 
 class CheckInParticipant(APIView):
     """

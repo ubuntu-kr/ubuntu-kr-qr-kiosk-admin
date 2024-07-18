@@ -22,7 +22,6 @@ from kiosksvc import views, pdfview
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('oidc/', include('mozilla_django_oidc.urls')),
-    path("kioskconfig/", views.kiosk_config, name="kiosk_config"),
     path("participants/", views.search_participants),
     path("participant/", views.get_participant),
     path("checkin/", views.CheckInParticipant.as_view()),

@@ -16,17 +16,9 @@ import requests
 from rest_framework.decorators import api_view, authentication_classes
 
 
-jwt_public_key_raw = open(settings.CHECKIN_QR_CONFIG["public_key_path"], 'r').read()
-jwt_public_key = serialization.load_pem_public_key(jwt_public_key_raw.encode())
-jwt_key_algo = settings.CHECKIN_QR_CONFIG["key_algo"]
 public_webhook_url = settings.WEBHOOK_URLS["public"]
 organizer_webhook_url = settings.WEBHOOK_URLS["organizer"]
 # Create your views here.
-def kiosk_config(request):
-    return JsonResponse({
-        "public_key": jwt_public_key_raw,
-        "key_algo": jwt_key_algo,
-    })
 
 
 class CallStaffView(APIView):
@@ -54,77 +46,6 @@ def get_participant(request):
     serializer = ParticipantSerializer(participant, many=True)
     return Response(serializer.data)
 
-class CheckInParticipant(APIView):
-    """
-    View to list all users in the system.
-
-    * Requires token authentication.
-    * Only admin users are able to access this view.
-    """
-    authentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.IsAdminUser]
-    def post(self, request, format=None):
-        if("ParticipantToken" not in request.headers):
-            return JsonResponse({
-                "result":"ParticipantToken not found in header"
-            }, status=401)
-        token = request.headers['ParticipantToken']
-        try:
-            payload = jwt.decode(token, jwt_public_key, algorithms=[jwt_key_algo], verify=True)
-        except:
-            return JsonResponse({
-                "result":"Error decoding token"
-            }, status=401)
-        dupcheck = CheckInLog.objects.filter(tokenId=payload['sub']).first()
-        if(dupcheck is not None):
-            return JsonResponse({
-                "result":"이미 체크인 한 참가자 입니다. Participant already checked in."
-            }, status=401)
-        try:
-            participant = Participant.objects.get(id=int(payload['sub']))
-        except models.DoesNotExist:
-             return JsonResponse({
-                "result":"존재하지 않는 참가자 입니다. Participant not exists."
-            }, status=404)
-        CheckInLog.objects.create(
-            tokenId=payload['tid'],
-            checkedInAt=timezone.now(),
-            participant=participant
-        )
-
-        subject = f"{settings.EMAIL_EVENT_NAME} 체크인 완료"
-        message = f"""
-        {participant.name}님 안녕하세요,
-        {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
-        즐거운 행사 되시기 바랍니다!
-
-        감사합니다.
-        {settings.EMAIL_SENDER_NAME} 드림.
-
-        Hello {participant.name},
-        You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
-        Hope you enjoy the event!
-
-        Best regards,
-        {settings.EMAIL_SENDER_NAME}
-        """
-        email = EmailMessage(
-            subject,
-            message,
-            settings.EMAIL_SENDER,
-            [participant.email],
-            [],
-            reply_to=[settings.EMAIL_REPLY_TO],
-            headers={},
-        )
-        email.send()
-        webhook_payload = {
-            "text": f"{participant.name}님이 행사장에 도착했습니다!"
-        }
-        requests.post(public_webhook_url, json=webhook_payload)
-        requests.post(organizer_webhook_url, json=webhook_payload)
-        serializer = ParticipantSerializer(participant, many=False)
-        return JsonResponse(serializer.data)
 
 class CheckInByCode(APIView):
     """
@@ -169,6 +90,13 @@ class CheckInByCode(APIView):
         {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
 
         {settings.EMAIL_SENDER_NAME} 드림.
+
+        Hello {participant.name},
+        You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
+        Hope you enjoy the event!
+
+        Best regards,
+        {settings.EMAIL_SENDER_NAME}
         """
         email = EmailMessage(
             subject,
@@ -180,7 +108,11 @@ class CheckInByCode(APIView):
             headers={},
         )
         email.send()
-
+        webhook_payload = {
+            "text": f"{participant.name}님이 행사장에 도착했습니다!"
+        }
+        requests.post(public_webhook_url, json=webhook_payload)
+        requests.post(organizer_webhook_url, json=webhook_payload)
         return JsonResponse({
                 "result":"Participant successfully checked in"
             }, status=200)

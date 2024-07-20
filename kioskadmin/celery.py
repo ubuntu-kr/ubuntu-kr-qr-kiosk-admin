@@ -12,7 +12,7 @@ app = Celery('kioskadmin')
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
-
+app.conf.broker_url = os.environ.get("CELERY_BROKER_URL")
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()

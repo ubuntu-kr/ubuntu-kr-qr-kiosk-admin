@@ -2,7 +2,7 @@ version: "3"
 
 services:
   django:
-    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:8a1e2dedb8cd068ffcca3925760d95b535b7c668
+    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:a73f5bf57fbb9577690c502a2b9c325c9bf62958
     volumes:
       - ./data:/app/data
       - ./static:/app/static
@@ -36,7 +36,7 @@ services:
       - RECAPTCHA_PRIVATE_KEY=your.recaptcha.privkey
       - CELERY_BROKER_URL=redis://redis:6379/0
   worker:
-    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:8a1e2dedb8cd068ffcca3925760d95b535b7c668
+    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:a73f5bf57fbb9577690c502a2b9c325c9bf62958
     volumes:
       - ./data:/app/data
       - ./static:/app/static

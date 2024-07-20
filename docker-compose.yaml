@@ -73,6 +73,13 @@ services:
     image: bitnami/redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
+  postgres:
+    image: postgresql
+    environment:
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data/pgdata:/var/lib/postgresql/data/pgdata
   caddy:
     image: caddy
     volumes:

@@ -20,9 +20,6 @@ services:
       - OIDC_RP_CLIENT_ID=your.oidc.client.id
       - OIDC_RP_CLIENT_SECRET=your.oidc.client.secret
       - OIDC_CONFIG_BASEURL=https://oidc.server.baseutl
-      - CHECKIN_QR_JWT_PRIVATE_KEY_PATH=/app/data/path.to.private.ec.key
-      - CHECKIN_QR_JWT_PUBLIC_KEY_PATH=/app/data/path.to.public.pem
-      - CHECKIN_QR_JWT_KEY_ALGO=ES256
       - EMAIL_HOST=smtp.server.host
       - EMAIL_PORT=587
       - EMAIL_HOST_USER=smtp.host.user

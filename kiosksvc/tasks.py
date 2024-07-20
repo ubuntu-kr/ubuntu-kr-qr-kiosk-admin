@@ -46,14 +46,20 @@ def send_checkin_qr_email(queryset):
         행사장에서 체크인과 명찰 발급에 사용할 수 있는 QR코드와 인증코드를 발급하여 첨부 해 드렸습니다.
         QR 코드를 이용하는 경우, 첨부된 QR 코드 이미지를 행사장에서 스캔 하시고,
         인증 코드를 이용하는 경우, 아래 6자리 코드를 입력 하시면 됩니다.
+
         인증코드: {passcode}
+
         감사합니다.
         {settings.EMAIL_SENDER_NAME} 드림.
+
         Hello {participant.name},
         Thank you for registering to {settings.EMAIL_EVENT_NAME}.
         We've attached and QR Code and passcode that you can use to Check-in and print your badge.
         If you're using the QR code, please scan the QR code at the venue,
         or if you're using passcode, please enter the following 6-digit code on kiosk.
+
+        Passcode: {passcode}
+
         Best regards,
         {settings.EMAIL_SENDER_NAME}
         """

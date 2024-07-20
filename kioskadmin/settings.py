@@ -184,12 +184,6 @@ LOGOUT_REDIRECT_URL = "/admin/logout"
 OIDC_CREATE_USER = True  # Disable Django User Automatic Creation from OIDC
 OIDC_USERNAME_ALGO = "kioskadmin.oidc_auth.generate_username"
 
-# Key pair for Check-IN QR JWT
-CHECKIN_QR_CONFIG = {
-    "private_key_path": os.environ["CHECKIN_QR_JWT_PRIVATE_KEY_PATH"],
-    "public_key_path": os.environ["CHECKIN_QR_JWT_PUBLIC_KEY_PATH"],
-    "key_algo": os.environ["CHECKIN_QR_JWT_KEY_ALGO"],
-}
 
 # APPEND_SLASH=False
 

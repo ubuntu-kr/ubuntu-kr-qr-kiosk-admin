@@ -22,7 +22,7 @@ import base64
 from random import randint
 
 from .models import Participant, CheckInLog
-from .tasks import send_checkin_qr_email
+from .tasks import  send_checkin_qr_email as send_checkin_qr_email_task
 
 def random_with_N_digits(n):
     range_start = 10**(n-1)
@@ -56,7 +56,7 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
 
-        send_checkin_qr_email.apply_async(args=[queryset])
+        send_checkin_qr_email_task.apply_async(args=[queryset])
         messages.success(request, f"체크인 QR 코드 이메일 발송 작업이 실행 되었습니다.")
 
        

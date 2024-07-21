@@ -6,6 +6,7 @@ import io
 import bcrypt
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from .models import Participant
 from random import randint
 import uuid
 import jwt
@@ -17,9 +18,9 @@ def random_with_N_digits(n):
     return randint(range_start, range_end)
 
 @shared_task
-def send_checkin_qr_email(queryset):
-     for participant in queryset:
-
+def send_checkin_qr_email(participant_list_dict):
+     for participant_data in participant_list_dict:
+        participant = Participant.objects.get(id=int(participant_data['id']))
         passcode = str(random_with_N_digits(6))
         qr_data = {
             "id": participant.id,

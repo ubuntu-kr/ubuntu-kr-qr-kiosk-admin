@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OriginalUserAdmin
 from import_export.admin import ImportExportMixin
 from import_export import resources, fields
-from django.core import serializers
 
 
 import jwt
@@ -57,7 +56,7 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
         
-        send_checkin_qr_email_task.delay(serializers.serialize('json', queryset))
+        send_checkin_qr_email_task.delay(queryset.values())
         messages.success(request, f"체크인 QR 코드 이메일 발송 작업이 실행 되었습니다.")
 
 

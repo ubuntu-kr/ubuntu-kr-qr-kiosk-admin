@@ -11,7 +11,6 @@ services:
     environment:
       - DB_NAME=kiosk
       - DB_USER=kioskuser
-      - DB_PASS=your.db.password
       - DB_HOST=postgres
       - DB_PORT=5432
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -21,6 +20,7 @@ services:
       - postgres
   worker:
     image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:a73f5bf57fbb9577690c502a2b9c325c9bf62958
+    command: celery -A kioskadmin worker -l INFO
     volumes:
       - ./data:/app/data
       - ./static:/app/static
@@ -29,7 +29,6 @@ services:
     environment:
       - DB_NAME=kiosk
       - DB_USER=kioskuser
-      - DB_PASS=your.db.password
       - DB_HOST=postgres
       - DB_PORT=5432
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -45,10 +44,10 @@ services:
   postgres:
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=your.db.password
       - POSTGRES_USER=kioskuser
       - POSTGRES_DB=kiosk
       - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file: "docker-compose.env"
     volumes:
       - ./data/pgdata:/var/lib/postgresql/data/pgdata
   caddy:

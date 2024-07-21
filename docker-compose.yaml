@@ -1,4 +1,4 @@
-version: "3"
+# version: "3"
 
 services:
   django:
@@ -24,8 +24,6 @@ services:
     volumes:
       - ./data:/app/data
       - ./static:/app/static
-    ports:
-      - 8000:8000
     environment:
       - DB_NAME=kiosk
       - DB_USER=kioskuser

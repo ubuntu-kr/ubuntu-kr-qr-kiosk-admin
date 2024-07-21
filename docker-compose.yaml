@@ -9,32 +9,16 @@ services:
     ports:
       - 8000:8000
     environment:
-      - DEBUG=False
-      - APP_HOST=your.app.domain.com
       - DB_NAME=kiosk
       - DB_USER=kioskuser
       - DB_PASS=your.db.password
-      - DB_HOST=your.db.endpoint
+      - DB_HOST=postgres
       - DB_PORT=5432
-      - SECRET_KEY=your.django.sec.key
-      - OIDC_RP_CLIENT_ID=your.oidc.client.id
-      - OIDC_RP_CLIENT_SECRET=your.oidc.client.secret
-      - OIDC_CONFIG_BASEURL=https://oidc.server.baseutl
-      - EMAIL_HOST=smtp.server.host
-      - EMAIL_PORT=587
-      - EMAIL_HOST_USER=smtp.host.user
-      - EMAIL_HOST_PASSWORD=smtp.host.password
-      - EMAIL_SENDER=noreply@your.domain.org
-      - EMAIL_SENDER_NAME=Sender name here
-      - EMAIL_EVENT_NAME=Event name here
-      - EMAIL_REPLY_TO=contact@your.domain.here
-      - EMAIL_USE_TLS=True
-      - WEBHOOK_ORGANIZER_URL=https://Slack.webhook.url
-      - WEBHOOK_PUBLIC_URL=https://Slack.webhook.url
-      - EMAIL_CERTSTAMP_PATH=/app/data/path.to.stamp.image.png
-      - RECAPTCHA_PUBLIC_KEY=your.recaptcha.pubkey
-      - RECAPTCHA_PRIVATE_KEY=your.recaptcha.privkey
       - CELERY_BROKER_URL=redis://redis:6379/0
+    env_file: "docker-compose.env"
+    depends_on:
+      - redis
+      - postgres
   worker:
     image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:a73f5bf57fbb9577690c502a2b9c325c9bf62958
     volumes:
@@ -43,40 +27,27 @@ services:
     ports:
       - 8000:8000
     environment:
-      - DEBUG=False
-      - APP_HOST=your.app.domain.com
       - DB_NAME=kiosk
       - DB_USER=kioskuser
       - DB_PASS=your.db.password
-      - DB_HOST=your.db.endpoint
+      - DB_HOST=postgres
       - DB_PORT=5432
-      - SECRET_KEY=your.django.sec.key
-      - OIDC_RP_CLIENT_ID=your.oidc.client.id
-      - OIDC_RP_CLIENT_SECRET=your.oidc.client.secret
-      - OIDC_CONFIG_BASEURL=https://oidc.server.baseutl
-      - EMAIL_HOST=smtp.server.host
-      - EMAIL_PORT=587
-      - EMAIL_HOST_USER=smtp.host.user
-      - EMAIL_HOST_PASSWORD=smtp.host.password
-      - EMAIL_SENDER=noreply@your.domain.org
-      - EMAIL_SENDER_NAME=Sender name here
-      - EMAIL_EVENT_NAME=Event name here
-      - EMAIL_REPLY_TO=contact@your.domain.here
-      - EMAIL_USE_TLS=True
-      - WEBHOOK_ORGANIZER_URL=https://Slack.webhook.url
-      - WEBHOOK_PUBLIC_URL=https://Slack.webhook.url
-      - EMAIL_CERTSTAMP_PATH=/app/data/path.to.stamp.image.png
-      - RECAPTCHA_PUBLIC_KEY=your.recaptcha.pubkey
-      - RECAPTCHA_PRIVATE_KEY=your.recaptcha.privkey
       - CELERY_BROKER_URL=redis://redis:6379/0
+    env_file: "docker-compose.env"
+    depends_on:
+      - redis
+      - postgres
+      - django
   redis:
     image: bitnami/redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
   postgres:
-    image: postgresql
+    image: postgres
     environment:
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=your.db.password
+      - POSTGRES_USER=kioskuser
+      - POSTGRES_DB=kiosk
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - ./data/pgdata:/var/lib/postgresql/data/pgdata

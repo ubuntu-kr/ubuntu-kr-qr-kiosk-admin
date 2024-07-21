@@ -24,7 +24,7 @@ urlpatterns = [
     path('oidc/', include('mozilla_django_oidc.urls')),
     path("participants/", views.search_participants),
     path("participant/", views.get_participant),
-    path("checkin/", views.CheckInParticipant.as_view()),
+    # path("checkin/", views.CheckInParticipant.as_view()),
     path("checkin_passcode/", views.CheckInByCode.as_view()),
     path("call_staff/", views.CallStaffView.as_view()),
     path("request_cert/", pdfview.attendee_cert_request)

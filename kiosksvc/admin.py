@@ -56,11 +56,8 @@ class ParticipantAdmin(ImportExportMixin, admin.ModelAdmin):
     @admin.action(description="체크인 QR 이메일 발송", permissions=["change"])
     def send_checkin_qr_email(self, request, queryset):
 
-        send_checkin_qr_email_task.apply_async(args=[queryset])
+        send_checkin_qr_email_task.delay(queryset)
         messages.success(request, f"체크인 QR 코드 이메일 발송 작업이 실행 되었습니다.")
-
-       
-
 
 
 class UserTokenAdmin(OriginalUserAdmin):

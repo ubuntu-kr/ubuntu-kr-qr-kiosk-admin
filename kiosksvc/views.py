@@ -14,6 +14,7 @@ import bcrypt
 from django.core.mail import EmailMessage
 import requests
 from rest_framework.decorators import api_view, authentication_classes
+from .tasks import send_checkin_confirm
 
 
 public_webhook_url = settings.WEBHOOK_URLS["public"]
@@ -83,36 +84,7 @@ class CheckInByCode(APIView):
             checkedInAt=timezone.now(),
             participant=participant
         )
-
-        subject = f"{settings.EMAIL_EVENT_NAME} 체크인 완료"
-        message = f"""
-        {participant.name}님 안녕하세요,
-        {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
-
-        {settings.EMAIL_SENDER_NAME} 드림.
-
-        Hello {participant.name},
-        You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
-        Hope you enjoy the event!
-
-        Best regards,
-        {settings.EMAIL_SENDER_NAME}
-        """
-        email = EmailMessage(
-            subject,
-            message,
-            settings.EMAIL_SENDER,
-            [participant.email],
-            [],
-            reply_to=[settings.EMAIL_REPLY_TO],
-            headers={},
-        )
-        email.send()
-        webhook_payload = {
-            "text": f"{participant.name}님이 행사장에 도착했습니다!"
-        }
-        requests.post(public_webhook_url, json=webhook_payload)
-        requests.post(organizer_webhook_url, json=webhook_payload)
+        send_checkin_confirm.delay(participantId)
         return JsonResponse({
                 "result":"Participant successfully checked in"
             }, status=200)

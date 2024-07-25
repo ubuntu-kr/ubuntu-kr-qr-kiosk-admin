@@ -38,14 +38,14 @@ class CallStaffView(APIView):
 def search_participants(request):
     participants = Participant.objects.filter(email__contains=request.query_params['keyword'])
     serializer = ParticipantSerializer(participants, many=True)
-    return JsonResponse(serializer.data)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @authentication_classes([authentication.TokenAuthentication])
 def get_participant(request):
     participant = Participant.objects.get(id=request.query_params['id'])
-    serializer = ParticipantSerializer(participant, many=True)
-    return JsonResponse(serializer.data)
+    serializer = ParticipantSerializer(participant)
+    return Response(serializer.data)
 
 
 class CheckInByCode(APIView):

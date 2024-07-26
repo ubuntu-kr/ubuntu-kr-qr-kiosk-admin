@@ -89,17 +89,17 @@ def send_checkin_confirm(participant_id):
     {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
     {settings.EMAIL_SENDER_NAME} 드림.
 
-    행사 웹사이트 https://2024.ubuntu-kr.org/ko/
-    시간표
-    행사장 정보
+    행사 웹사이트 https://2024.ubuntu-kr.org/
+    시간표 https://2024.ubuntu-kr.org/schedules
+    행사장 정보 https://2024.ubuntu-kr.org/ko/venue-and-safety/
     
     Hello {participant.name},
     You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
     Hope you enjoy the event!
 
-    Event website https://2024.ubuntu-kr.org/ko/
-    Timetable
-    Venue info
+    Event website https://2024.ubuntu-kr.org/
+    Timetable https://2024.ubuntu-kr.org/schedules
+    Venue info https://2024.ubuntu-kr.org/en/venue-and-safety/
     
     Best regards,
     {settings.EMAIL_SENDER_NAME}

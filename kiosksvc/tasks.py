@@ -85,11 +85,22 @@ def send_checkin_confirm(participant_id):
     subject = f"{settings.EMAIL_EVENT_NAME} 체크인 완료"
     message = f"""
     {participant.name}님 안녕하세요,
+    
     {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
     {settings.EMAIL_SENDER_NAME} 드림.
+
+    행사 웹사이트 https://2024.ubuntu-kr.org/ko/
+    시간표
+    행사장 정보
+    
     Hello {participant.name},
     You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
     Hope you enjoy the event!
+
+    Event website https://2024.ubuntu-kr.org/ko/
+    Timetable
+    Venue info
+    
     Best regards,
     {settings.EMAIL_SENDER_NAME}
     """

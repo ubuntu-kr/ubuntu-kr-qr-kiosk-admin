@@ -115,7 +115,7 @@ def send_checkin_confirm(participant_id):
     )
     email.send()
     webhook_payload = {
-        "text": f"@everyone {participant.name}님이 행사장에 도착했습니다!"
+        "text": f"{participant.name}님이 행사장에 도착했습니다!"
     }
     requests.post(public_webhook_url, json=webhook_payload)
     requests.post(organizer_webhook_url, json=webhook_payload)

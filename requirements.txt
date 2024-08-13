@@ -24,7 +24,7 @@ django-recaptcha==3.0.0
 djangorestframework==3.14.0
 et-xmlfile==1.1.0
 fonttools==4.53.1
-gunicorn==21.2.0
+gunicorn==22.0.0
 html5lib==1.1
 idna==3.4
 josepy==1.13.0

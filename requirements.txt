@@ -34,7 +34,7 @@ mozilla-django-oidc==3.0.0
 odfpy==1.4.1
 openpyxl==3.1.2
 packaging==24.1
-Pillow==10.0.0
+Pillow==10.3.0
 prompt_toolkit==3.0.47
 psycopg==3.1.10
 pycparser==2.21

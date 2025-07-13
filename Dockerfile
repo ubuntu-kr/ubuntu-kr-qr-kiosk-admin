@@ -9,7 +9,7 @@ WORKDIR /app
 # Copy project
 COPY . .
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates fonts-noto-cjk python3 python3-pip python3-venv \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y libpango-1.0-0 libpangoft2-1.0-0 ca-certificates fonts-noto-cjk python3 python3-pip python3-venv \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /app/static \

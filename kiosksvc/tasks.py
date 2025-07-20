@@ -89,17 +89,23 @@ def send_checkin_confirm(participant_id):
     {settings.EMAIL_EVENT_NAME} 체크인이 완료 되었습니다.
     {settings.EMAIL_SENDER_NAME} 드림.
 
-    행사 웹사이트 https://2024.ubuntu-kr.org/
-    시간표 https://2024.ubuntu-kr.org/schedules
-    행사장 정보 https://2024.ubuntu-kr.org/ko/venue-and-safety/
+    행사 웹사이트 https://2025.ubuntu-kr.org/
+    시간표 https://2025.ubuntu-kr.org/schedules
+    행사장 정보 https://2025.ubuntu-kr.org/ko/venue-and-safety/
+    우분투한국커뮤니티 홈페이지 https://ubuntu-kr.org
+    우분투한국커뮤니티 포럼 https://discourse.ubuntu-kr.org
+    채팅 (Discord/Matrix) https://ubuntu-kr.org/chat
     
     Hello {participant.name},
     You have successfully checked in for {settings.EMAIL_EVENT_NAME}.
     Hope you enjoy the event!
 
-    Event website https://2024.ubuntu-kr.org/
-    Timetable https://2024.ubuntu-kr.org/schedules
-    Venue info https://2024.ubuntu-kr.org/en/venue-and-safety/
+    Event website https://2025.ubuntu-kr.org/
+    Timetable https://2025.ubuntu-kr.org/schedules
+    Venue info https://2025.ubuntu-kr.org/en/venue-and-safety/
+    Ubuntu Korea Community - Homepage https://ubuntu-kr.org
+    Ubuntu Korea Community - Forum https://discourse.ubuntu-kr.org
+    Chat (Discord/Matrix) https://ubuntu-kr.org/chat
     
     Best regards,
     {settings.EMAIL_SENDER_NAME}

@@ -2,7 +2,7 @@
 
 services:
   django:
-    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:a73f5bf57fbb9577690c502a2b9c325c9bf62958
+    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:957975ec008fb35aa383b11d96968a222284405a
     volumes:
       - ./data:/app/data
       - ./static:/app/static
@@ -19,7 +19,7 @@ services:
       - redis
       - postgres
   worker:
-    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:a73f5bf57fbb9577690c502a2b9c325c9bf62958
+    image: ghcr.io/ubuntu-kr/ubuntu-kr-qr-kiosk-admin:957975ec008fb35aa383b11d96968a222284405a
     command: celery -A kioskadmin worker -l INFO
     volumes:
       - ./data:/app/data

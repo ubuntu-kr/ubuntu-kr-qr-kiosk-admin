@@ -1,6 +1,8 @@
 #!/bin/sh
 
-python manage.py migrate
-echo yes | python manage.py collectstatic
-# and add this at the end
+if [ "$1" = "gunicorn" ]; then
+    python manage.py migrate
+    python manage.py collectstatic --noinput
+fi
+
 exec "$@"

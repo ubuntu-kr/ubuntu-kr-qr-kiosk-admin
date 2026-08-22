@@ -12,7 +12,10 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y libpango-1.0-0 libpangoft2-1.0-0 ca-certificates fonts-noto-cjk python3 python3-pip python3-venv \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 app \
+    && useradd --uid 10001 --gid app --no-create-home --home-dir /app --shell /usr/sbin/nologin app \
     && mkdir /app/static \
+    && chown app:app /app/static \
     && python3 -m venv /app/venv \
     && . /app/venv/bin/activate \
     && pip install --upgrade pip \
@@ -21,6 +24,8 @@ RUN apt-get update \
 ENV PATH="/app/venv/bin:$PATH"
 
 EXPOSE 8000
+
+USER app:app
 
 ENTRYPOINT ["./run.sh"]
 # runs the production server
